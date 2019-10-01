@@ -16,6 +16,15 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 
+/*
+Gruppemedlemmer:    S331398 - Anders Oeyrehagen
+                    S330474 - Anders Magnus Ytterboee
+                    S330473 - Tommy Grut
+                    S331386 - Tobias Dyre Evju
+                    S331359 - Theodor Fredheim Aandal
+
+ */
+
 
 public class DobbeltLenketListe<T> implements Liste<T> {
 
