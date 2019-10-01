@@ -54,25 +54,57 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     private int endringer;         // antall endringer i listen
 
     public DobbeltLenketListe() {
-        throw new NotImplementedException();
+        hode = null;
+        hale = null;
+        antall = 0;
+
     }
 
+
+
     public DobbeltLenketListe(T[] a) {
-        throw new NotImplementedException();
+
+        if(a == null){
+            throw new NullPointerException("Tabellen a er null!");
+        }
+        hode = hale = new Node(null);
+
+        Node p = hode;
+
+
+        for(T i : a){
+                Node<T> q = new Node<>(i);
+                p.neste = q;
+                q.forrige = p;
+                p=q;
+                hale = q;
+        }
+
+
+
     }
 
     public Liste<T> subliste(int fra, int til){
+
         throw new NotImplementedException();
     }
 
     @Override
     public int antall() {
-        throw new NotImplementedException();
+        return antall;
+
+
     }
 
     @Override
     public boolean tom() {
-        throw new NotImplementedException();
+        if(antall==0){
+            return true;
+        }
+        else{
+            return false;
+        }
+
     }
 
     @Override
