@@ -64,10 +64,13 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     public DobbeltLenketListe(T[] a) {
 
-        if(a == null){
+        if(a.length == 0 || tom() ==true){
+            System.out.println("Hei");
             throw new NullPointerException("Tabellen a er null!");
         }
         hode = hale = new Node(null);
+
+        hode.verdi=a[0];
 
         Node p = hode;
 
@@ -154,11 +157,29 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public String toString() {
-        throw new NotImplementedException();
+        StringBuilder strengBygger = new StringBuilder();
+
+        Node p = hode;
+        p=p.neste;
+
+        while(p != null) {
+            strengBygger.append(p.verdi);
+            p=p.neste;
+        }
+        return strengBygger.toString();
     }
 
     public String omvendtString() {
-        throw new NotImplementedException();
+        StringBuilder strengBygger = new StringBuilder();
+
+        Node q = hale;
+        q=q.forrige;
+
+        while (q != null) {
+            strengBygger.append(q.verdi);
+            q=q.forrige;
+        }
+        return strengBygger.toString();
     }
 
     @Override
