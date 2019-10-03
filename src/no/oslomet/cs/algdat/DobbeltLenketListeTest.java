@@ -34,6 +34,7 @@ class DobbeltLenketListeTest {
             }
         }
 
+
         liste = new DobbeltLenketListe<>(new Integer[]{});
 
         if (liste.antall() != 0) {
@@ -46,17 +47,25 @@ class DobbeltLenketListeTest {
             System.out.println("Oppgave 1f: Feil i konstruktøren!");
         }
 
+
         liste = new DobbeltLenketListe<>(new Integer[]{1});
+
+
+
 
         if (liste.antall() != 1) {
             antallFeil++;
             System.out.println("Oppgave 1g: Feil i konstruktøren!");
         }
 
+
+
         if (liste.tom() != false) {
             antallFeil++;
             System.out.println("Oppgave 1h: Feil i konstruktøren!");
         }
+
+
 
         liste = new DobbeltLenketListe<>(new Integer[]{1, 2});
 
@@ -72,16 +81,23 @@ class DobbeltLenketListeTest {
             System.out.println("Oppgave 1j: Feil i konstruktøren!");
         }
 
+
+
         Integer[] a = {1, 2, 3, 4, 5};
         Integer[] b = {1, 2, 3, 4, 5};
         liste = new DobbeltLenketListe<>(a);
+
+
 
         if (!Arrays.equals(a, b)) {
             antallFeil++;
             System.out.println("Oppgave 1k: Konstruktøren endrer parametertabellen!");
         }
 
+
+
         liste = new DobbeltLenketListe<>(new Integer[]{null});
+
 
         if (liste.antall() != 0) {
             antallFeil++;
@@ -102,6 +118,8 @@ class DobbeltLenketListeTest {
             System.out.println("Oppgave 1n: Feil i konstruktøren!");
         }
 
+
+
         liste = new DobbeltLenketListe<>(new Integer[]{null, 1, null});
 
         if (liste.antall() != 1) {
@@ -109,12 +127,17 @@ class DobbeltLenketListeTest {
             System.out.println("Oppgave 1o: Feil i konstruktøren!");
         }
 
+
+
         liste = new DobbeltLenketListe<>(new Integer[]{null, 1, null, 2, null, 3, null});
 
         if (liste.antall() != 3) {
             antallFeil++;
             System.out.println("Oppgave 1p: Feil i konstruktøren!");
         }
+
+
+
 
         class Test<T> extends DobbeltLenketListe<T> {
             public boolean leggInn(T verdi) {
@@ -128,6 +151,8 @@ class DobbeltLenketListeTest {
             }
         }
 
+
+
         Integer[] tall = {1, 2, 3, 4, 5};
         Test<Integer> testliste = new Test(tall);
 
@@ -135,7 +160,11 @@ class DobbeltLenketListeTest {
             antallFeil++;
             System.out.println("Oppgave 1q: leggInn-metoden brukes i konstruktøren!");
         }
+
+
     }
+
+
 
 
     ////// Oppgave 2 /////////////////////

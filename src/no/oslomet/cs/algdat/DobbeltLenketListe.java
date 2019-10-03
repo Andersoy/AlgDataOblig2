@@ -4,15 +4,12 @@ package no.oslomet.cs.algdat;
 ////////////////// class DobbeltLenketListe //////////////////////////////
 
 
+import com.sun.tools.javac.util.ArrayUtils;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.Comparator;
-import java.util.ConcurrentModificationException;
-import java.util.NoSuchElementException;
-import java.util.StringJoiner;
+import java.lang.reflect.Array;
+import java.util.*;
 
-import java.util.Iterator;
-import java.util.Objects;
 import java.util.function.Predicate;
 
 
@@ -43,7 +40,9 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }
 
         private Node(T verdi) {
+
             this(verdi, null, null);
+
         }
     }
 
@@ -52,36 +51,56 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     private Node<T> hale;          // peker til den siste i listen
     private int antall;            // antall noder i listen
     private int endringer;         // antall endringer i listen
+    private T[] generiskArray;
+
 
     public DobbeltLenketListe() {
         hode = null;
         hale = null;
         antall = 0;
-
     }
 
+    private void flyttVerdier(T[] a){
+        int teller = 0;
+        for(T i : a){
+            if(i !=null){
+                teller++;
+            }
+        }
 
+        generiskArray = (T[]) new Object[teller];
+        int index = 0;
+        for(T i: a){
+            if(i!=null){
+                generiskArray[index]=i;
+                index++;
+            }
+        }
+    }
 
     public DobbeltLenketListe(T[] a) {
+        antall = 0;
 
-        if(a == null){
+        if(a==null){
             throw new NullPointerException("Tabellen a er null!");
         }
+
+        flyttVerdier(a);
         hode = hale = new Node(null);
 
-        Node p = hode;
 
-
-        for(T i : a){
+        if(generiskArray.length!=0){
+            Node<T> p = hode;
+            for (T i : generiskArray) {
                 Node<T> q = new Node<>(i);
                 p.neste = q;
                 q.forrige = p;
-                p=q;
-                hale = q;
+                p = q;
+                antall++;
+            }
+            hale.forrige = p;
+
         }
-
-
-
     }
 
     public Liste<T> subliste(int fra, int til){
