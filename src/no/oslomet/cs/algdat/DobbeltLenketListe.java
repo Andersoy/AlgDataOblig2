@@ -128,12 +128,43 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public boolean leggInn(T verdi) {
-        throw new NotImplementedException();
+        boolean svar = false;
+        Node<T> q = new Node<>(verdi);
+
+        if(hale == null) {
+            hode=q;
+            hale=q;
+            q.neste=null;
+            q.forrige=null;
+            antall++;
+            endringer++;
+        } else {
+            q.forrige=hale;
+            hale.neste=q;
+            hale=q;
+            svar = true;
+            antall++;
+            endringer++;
+        }
+        return svar;
     }
+
 
     @Override
     public void leggInn(int indeks, T verdi) {
-        throw new NotImplementedException();
+        Node<T> p = hode;
+        Node<T> q = new Node<>(verdi);
+
+        for(int i = 0; i < indeks-1; i ++){
+            p=p.neste;
+        }
+        Node<T> r=p.neste;
+
+        q.neste=r;
+        r.forrige=q;
+
+        q.forrige=p;
+        p.neste=q;
     }
 
     @Override
@@ -173,11 +204,29 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public String toString() {
-        throw new NotImplementedException();
+        StringBuilder strengBygger = new StringBuilder();
+
+        Node p = hode;
+        p=p.neste;
+
+        while(p != null) {
+            strengBygger.append(p.verdi);
+            p=p.neste;
+        }
+        return strengBygger.toString();
     }
 
     public String omvendtString() {
-        throw new NotImplementedException();
+        StringBuilder strengBygger = new StringBuilder();
+
+        Node q = hale;
+        q=q.forrige;
+
+        while (q != null) {
+            strengBygger.append(q.verdi);
+            q=q.forrige;
+        }
+        return strengBygger.toString();
     }
 
     @Override
