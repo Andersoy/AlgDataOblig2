@@ -64,38 +64,15 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     public DobbeltLenketListe(T[] a) {
 
-        if(a.length == 0 || tom() ==true){
-            System.out.println("Hei");
-            throw new NullPointerException("Tabellen a er null!");
-        }
-        hode = hale = new Node(null);
-
-        hode.verdi=a[0];
-
-        Node p = hode;
-
-
-        for(T i : a){
-                Node<T> q = new Node<>(i);
-                p.neste = q;
-                q.forrige = p;
-                p=q;
-                hale = q;
-        }
-
-
-
     }
 
     public Liste<T> subliste(int fra, int til){
-
         throw new NotImplementedException();
     }
 
     @Override
     public int antall() {
         return antall;
-
 
     }
 
