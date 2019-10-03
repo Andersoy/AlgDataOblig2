@@ -4,7 +4,7 @@ package no.oslomet.cs.algdat;
 ////////////////// class DobbeltLenketListe //////////////////////////////
 
 
-import com.sun.tools.javac.util.ArrayUtils;
+
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.lang.reflect.Array;
@@ -19,7 +19,6 @@ Gruppemedlemmer:    S331398 - Anders Oeyrehagen
                     S330473 - Tommy Grut
                     S331386 - Tobias Dyre Evju
                     S331359 - Theodor Fredheim Aandal
-
  */
 
 
@@ -29,6 +28,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
      * Node class
      * @param <T>
      */
+
     private static final class Node<T> {
         private T verdi;                   // nodens verdi
         private Node<T> forrige, neste;    // pekere
