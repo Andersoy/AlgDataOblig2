@@ -209,24 +209,28 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         Node p = hode;
         p=p.neste;
 
+        strengBygger.append("[");
         while(p != null) {
-            strengBygger.append(p.verdi);
+            strengBygger.append( p.verdi + ",");
             p=p.neste;
         }
+
+        strengBygger.append("]");
+        
         return strengBygger.toString();
     }
 
     public String omvendtString() {
-        StringBuilder strengBygger = new StringBuilder();
+        StringBuilder strengByggerOmvendt = new StringBuilder();
 
         Node q = hale;
         q=q.forrige;
 
         while (q != null) {
-            strengBygger.append(q.verdi);
+            strengByggerOmvendt.append(q.verdi);
             q=q.forrige;
         }
-        return strengBygger.toString();
+        return strengByggerOmvendt.toString();
     }
 
     @Override
