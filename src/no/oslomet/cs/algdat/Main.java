@@ -17,11 +17,11 @@ public class Main {
 
         liste = new DobbeltLenketListe<>(new Integer[]{});
 
-        String[] s = {"123", "456"};
+        String[] s = {"123"};
         DobbeltLenketListe<String> l = new DobbeltLenketListe<>(s);
 
         System.out.println(l.toString());
-     //   System.out.println(l.omvendtString());
+       System.out.println(l.omvendtString());
 
         /*String[] s1 = {}, s2 = {"A"}, s3 = {null,"A",null,"B",null};
         DobbeltLenketListe<String> l1 = new DobbeltLenketListe<>(s1);

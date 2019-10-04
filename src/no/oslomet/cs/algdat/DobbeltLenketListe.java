@@ -88,8 +88,19 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         flyttVerdier(a);
         hode = hale = new Node(null);
 
+        if(generiskArray.length == 0){
+            hode.neste  = hale;
+            hale.forrige = hode;
+        }
 
-        if(generiskArray.length!=0){
+        else if(generiskArray.length == 1){
+            Node<T> q = new Node<>(generiskArray[0]);
+            hode.neste = q;
+            hale.forrige = q;
+            antall++;
+        }
+
+        else if(generiskArray.length!=0){
             Node<T> p = hode;
             for (T i : generiskArray) {
                 Node<T> q = new Node<>(i);
@@ -99,8 +110,8 @@ public class DobbeltLenketListe<T> implements Liste<T> {
                 antall++;
             }
             hale.forrige = p;
-
         }
+
     }
 
     public Liste<T> subliste(int fra, int til){
@@ -111,7 +122,6 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     @Override
     public int antall() {
         return antall;
-
 
     }
 
@@ -129,15 +139,18 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     @Override
     public boolean leggInn(T verdi) {
         boolean svar = false;
+
+        
         Node<T> q = new Node<>(verdi);
 
-        if(hale == null) {
+        if(antall == 0) {
             hode=q;
             hale=q;
             q.neste=null;
             q.forrige=null;
             antall++;
             endringer++;
+            svar = true;
         } else {
             q.forrige=hale;
             hale.neste=q;
@@ -208,28 +221,55 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         Node p = hode;
         p=p.neste;
-
         strengBygger.append("[");
-        while(p != null) {
-            strengBygger.append( p.verdi + ",");
-            p=p.neste;
-        }
 
+        if (antall == 0) {
+            return "[]";
+        } else if (antall == 1) {
+            strengBygger.append(p.verdi);
+        } else {
+            while(p != null) {
+
+                if (p.neste == null) {
+                    strengBygger.append(",");
+                }
+                strengBygger.append(p.verdi);
+                p=p.neste;
+
+            }
+        }
         strengBygger.append("]");
-        
+
         return strengBygger.toString();
+
     }
 
     public String omvendtString() {
         StringBuilder strengByggerOmvendt = new StringBuilder();
 
-        Node q = hale;
-        q=q.forrige;
-
-        while (q != null) {
-            strengByggerOmvendt.append(q.verdi);
+            Node q = hale;
             q=q.forrige;
-        }
+
+            strengByggerOmvendt.append("[");
+
+            if (antall == 1) {
+                strengByggerOmvendt.append(q.verdi);
+            } else if (antall == 0) {
+                return "[]";
+            } else {
+                while (q.verdi != null) {
+
+                    if (q.forrige == hode) {
+                        strengByggerOmvendt.append(q.verdi);
+                        q=q.forrige;
+                    } else{
+                        strengByggerOmvendt.append(q.verdi + ",");
+                        q=q.forrige;
+                    }
+                }
+            }
+            strengByggerOmvendt.append("]");
+
         return strengByggerOmvendt.toString();
     }
 
