@@ -54,10 +54,36 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     private T[] generiskArray;
 
 
+
+    private Node<T> finnNode(int indeks) {
+        Node p = hode;
+        Node q;
+        Node x = hale;
+
+        if(indeks<(antall/2)){
+            for(int i = 0; i<indeks; i++){
+                q=p.neste;
+                p=q;
+            }
+            return p;
+        }
+
+        else{
+            for(int i = generiskArray.length-1; i>indeks; i--){
+                q=x.forrige;
+                x=q;
+            }
+            return x;
+        }
+    }
+
     public DobbeltLenketListe() {
-        hode = null;
-        hale = null;
+        hode = hale = new Node(null);
+        hode.neste = hale;
+        hale.forrige = hode;
+
         antall = 0;
+
     }
 
     private void flyttVerdier(T[] a){
@@ -87,21 +113,37 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         flyttVerdier(a);
         hode = hale = new Node(null);
+        hode.neste  = hale;
+        hale.forrige = hode;
 
-
-        if(generiskArray.length!=0){
+//        if(generiskArray.length == 0){
+//
+//        }
+//
+//
+//        else if(generiskArray.length == 1){
+//            Node<T> q = new Node<>(generiskArray[0]);
+//            hode.neste = q;
+//            hale.forrige = q;
+//            antall = 1;
+//        }
+//
+//
+//        else {
             Node<T> p = hode;
             for (T i : generiskArray) {
                 Node<T> q = new Node<>(i);
                 p.neste = q;
-                q.forrige = p;
+                if (p != hode) {
+                    q.forrige = p;
+                }
                 p = q;
                 antall++;
             }
             hale.forrige = p;
+//        }
 
         }
-    }
 
     public Liste<T> subliste(int fra, int til){
 
@@ -128,12 +170,48 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public boolean leggInn(T verdi) {
-        throw new NotImplementedException();
+        boolean svar = false;
+        T verdiNode = Objects.requireNonNull(verdi, "Nullverdier ikke tillatt");
+
+        Node<T> q = new Node<>(verdiNode);
+
+        //hvis listen er tom
+        if(antall == 0) {
+            hode.neste=q;
+            hale.forrige=q;
+            antall++;
+            endringer++;
+            svar = true;
+
+
+        } else {   //hvis listen består av 1 eller flere
+            Node<T> x = hale.forrige;
+            x.neste = q;
+            q.forrige = x;
+            hale.forrige = q;
+            svar = true;
+            antall++;
+            endringer++;
+        }
+        return svar;
     }
+
 
     @Override
     public void leggInn(int indeks, T verdi) {
-        throw new NotImplementedException();
+        Node<T> p = hode;
+        Node<T> q = new Node<>(verdi);
+
+        for(int i = 0; i < indeks-1; i ++){
+            p=p.neste;
+        }
+        Node<T> r=p.neste;
+
+        q.neste=r;
+        r.forrige=q;
+
+        q.forrige=p;
+        p.neste=q;
     }
 
     @Override
@@ -143,7 +221,11 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public T hent(int indeks) {
-        throw new NotImplementedException();
+
+        indeksKontroll(indeks, false);
+
+        Node<T> node = finnNode(indeks);
+        return (T)node;
     }
 
     @Override
@@ -153,7 +235,20 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public T oppdater(int indeks, T nyverdi) {
-        throw new NotImplementedException();
+
+
+        T objekt = hent(indeks);
+
+        if(nyverdi == null){
+            return null;
+        }
+
+        T temp = objekt;
+        objekt = nyverdi;
+
+        endringer++;
+        return temp;
+
     }
 
     @Override
@@ -173,11 +268,55 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public String toString() {
-        throw new NotImplementedException();
-    }
+        StringBuilder verdiString = new StringBuilder();
+
+        if(antall == 0){
+            return "[]";
+        }
+        else if(antall == 1){
+            return "[" + hode.neste.verdi + "]";
+        }
+
+        else {
+            Node p = hode.neste;
+
+            verdiString.append("[" + p.verdi);
+            p = p.neste;
+
+            while (p != null) {
+                verdiString.append(", " +p.verdi);
+                p = p.neste;
+            }
+            verdiString.append("]");
+            return verdiString.toString();
+        }
+        }
+
 
     public String omvendtString() {
-        throw new NotImplementedException();
+        StringBuilder verdiString = new StringBuilder();
+
+        if(antall == 0){
+            return "[]";
+        }
+        else if(antall == 1){
+            return "[" + hale.forrige.verdi + "]";
+        }
+
+        else {
+            Node p = hale.forrige;
+
+            verdiString.append("[" + p.verdi);
+            p = p.forrige;
+
+            while (p != null) {           // "p.verdi" her, og kun "p" i toString()-metoden. hvorfor??
+                verdiString.append(", " +p.verdi);
+                p = p.forrige;
+            }
+            verdiString.append("]");
+            return verdiString.toString();
+        }
+
     }
 
     @Override
