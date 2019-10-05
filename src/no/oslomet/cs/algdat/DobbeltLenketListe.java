@@ -83,7 +83,6 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         hale.forrige = hode;
 
         antall = 0;
-
     }
 
     private void flyttVerdier(T[] a){
@@ -116,34 +115,18 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         hode.neste  = hale;
         hale.forrige = hode;
 
-//        if(generiskArray.length == 0){
-//
-//        }
-//
-//
-//        else if(generiskArray.length == 1){
-//            Node<T> q = new Node<>(generiskArray[0]);
-//            hode.neste = q;
-//            hale.forrige = q;
-//            antall = 1;
-//        }
-//
-//
-//        else {
-            Node<T> p = hode;
-            for (T i : generiskArray) {
-                Node<T> q = new Node<>(i);
-                p.neste = q;
-                if (p != hode) {
-                    q.forrige = p;
-                }
-                p = q;
-                antall++;
+        Node<T> p = hode;
+        for (T i : generiskArray) {
+            Node<T> q = new Node<>(i);
+            p.neste = q;
+            if (p != hode) {
+                q.forrige = p;
             }
-            hale.forrige = p;
-//        }
-
+            p = q;
+            antall++;
         }
+        hale.forrige = p;
+    }
 
     public Liste<T> subliste(int fra, int til){
 
@@ -175,6 +158,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         Node<T> q = new Node<>(verdiNode);
 
+
         //hvis listen er tom
         if(antall == 0) {
             hode.neste=q;
@@ -195,7 +179,6 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }
         return svar;
     }
-
 
     @Override
     public void leggInn(int indeks, T verdi) {
@@ -290,8 +273,8 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             verdiString.append("]");
             return verdiString.toString();
         }
-        }
 
+    }
 
     public String omvendtString() {
         StringBuilder verdiString = new StringBuilder();
@@ -316,7 +299,6 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             verdiString.append("]");
             return verdiString.toString();
         }
-
     }
 
     @Override

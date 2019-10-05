@@ -266,6 +266,7 @@ class DobbeltLenketListeTest {
         String t1 = "[]", t2 = liste.toString();
 
         if (!t1.equals(t2)) {
+
             antallFeil++;
             System.out.println
                     ("Oppgave 2m: Du har " + t2 + ", men det skal være " + t1);
