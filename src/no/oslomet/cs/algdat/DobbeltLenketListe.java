@@ -55,8 +55,9 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
 
     public DobbeltLenketListe() {
-        hode = null;
-        hale = null;
+        hode = hale = new Node(null);
+        hode.neste=hale;
+        hale.forrige=hode;
         antall = 0;
     }
 
@@ -87,31 +88,20 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         flyttVerdier(a);
         hode = hale = new Node(null);
+        hode.neste  = hale;
+        hale.forrige = hode;
 
-        if(generiskArray.length == 0){
-            hode.neste  = hale;
-            hale.forrige = hode;
-        }
-
-        else if(generiskArray.length == 1){
-            Node<T> q = new Node<>(generiskArray[0]);
-            hode.neste = q;
-            hale.forrige = q;
+        Node<T> p = hode;
+        for (T i : generiskArray) {
+            Node<T> q = new Node<>(i);
+            p.neste = q;
+            if (p != hode) {
+                q.forrige = p;
+            }
+            p = q;
             antall++;
         }
-
-        else if(generiskArray.length!=0){
-            Node<T> p = hode;
-            for (T i : generiskArray) {
-                Node<T> q = new Node<>(i);
-                p.neste = q;
-                q.forrige = p;
-                p = q;
-                antall++;
-            }
-            hale.forrige = p;
-        }
-
+        hale.forrige = p;
     }
 
     public Liste<T> subliste(int fra, int til){
@@ -139,22 +129,25 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     @Override
     public boolean leggInn(T verdi) {
         boolean svar = false;
+        T verdiNode = Objects.requireNonNull(verdi, "Nullverdier ikke tillatt");
 
-        
-        Node<T> q = new Node<>(verdi);
+        Node<T> q = new Node<>(verdiNode);
 
+
+        //hvis listen er tom
         if(antall == 0) {
-            hode=q;
-            hale=q;
-            q.neste=null;
-            q.forrige=null;
+            hode.neste=q;
+            hale.forrige=q;
             antall++;
             endringer++;
             svar = true;
-        } else {
-            q.forrige=hale;
-            hale.neste=q;
-            hale=q;
+
+
+        } else {   //hvis listen består av 1 eller flere
+            Node<T> x = hale.forrige;
+            x.neste = q;
+            q.forrige = x;
+            hale.forrige = q;
             svar = true;
             antall++;
             endringer++;
@@ -217,60 +210,54 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public String toString() {
-        StringBuilder strengBygger = new StringBuilder();
+        StringBuilder verdiString = new StringBuilder();
 
-        Node p = hode;
-        p=p.neste;
-        strengBygger.append("[");
-
-        if (antall == 0) {
+        if(antall == 0){
             return "[]";
-        } else if (antall == 1) {
-            strengBygger.append(p.verdi);
-        } else {
-            while(p != null) {
-
-                if (p.neste == null) {
-                    strengBygger.append(",");
-                }
-                strengBygger.append(p.verdi);
-                p=p.neste;
-
-            }
         }
-        strengBygger.append("]");
+        else if(antall == 1){
+            return "[" + hode.neste.verdi + "]";
+        }
 
-        return strengBygger.toString();
+        else {
+            Node p = hode.neste;
+
+            verdiString.append("[" + p.verdi);
+            p = p.neste;
+
+            while (p != null) {
+                verdiString.append(", " +p.verdi);
+                p = p.neste;
+            }
+            verdiString.append("]");
+            return verdiString.toString();
+        }
 
     }
 
     public String omvendtString() {
-        StringBuilder strengByggerOmvendt = new StringBuilder();
+        StringBuilder verdiString = new StringBuilder();
 
-            Node q = hale;
-            q=q.forrige;
+        if(antall == 0){
+            return "[]";
+        }
+        else if(antall == 1){
+            return "[" + hale.forrige.verdi + "]";
+        }
 
-            strengByggerOmvendt.append("[");
+        else {
+            Node p = hale.forrige;
 
-            if (antall == 1) {
-                strengByggerOmvendt.append(q.verdi);
-            } else if (antall == 0) {
-                return "[]";
-            } else {
-                while (q.verdi != null) {
+            verdiString.append("[" + p.verdi);
+            p = p.forrige;
 
-                    if (q.forrige == hode) {
-                        strengByggerOmvendt.append(q.verdi);
-                        q=q.forrige;
-                    } else{
-                        strengByggerOmvendt.append(q.verdi + ",");
-                        q=q.forrige;
-                    }
-                }
+            while (p != null) {           // "p.verdi" her, og kun "p" i toString()-metoden. hvorfor??
+                verdiString.append(", " +p.verdi);
+                p = p.forrige;
             }
-            strengByggerOmvendt.append("]");
-
-        return strengByggerOmvendt.toString();
+            verdiString.append("]");
+            return verdiString.toString();
+        }
     }
 
     @Override
