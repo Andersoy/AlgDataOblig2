@@ -83,6 +83,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         hale.forrige = hode;
 
         antall = 0;
+
     }
 
     private void flyttVerdier(T[] a){
@@ -199,7 +200,21 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public boolean inneholder(T verdi) {
-        throw new NotImplementedException();
+        Node<T> p = hode;
+        Node a = p.neste;
+        boolean svar = false;
+
+        for (int i = 0; i < antall; i++) {
+
+            if (a.verdi.equals((T)verdi)) {
+                svar=true;
+                break;
+            } else {
+                svar=false;
+            }
+            a=a.neste;
+        }
+        return svar;
     }
 
     @Override
@@ -213,7 +228,24 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public int indeksTil(T verdi) {
-        throw new NotImplementedException();
+        Node<T> p = hode;
+        Node a = p.neste;
+        int indeksSvar=0;
+
+            if (inneholder(verdi)) {
+                for (int i = 0; i < antall; i ++) {
+                    if(a.verdi.equals(verdi)) {
+                        indeksSvar=i;
+                        break;
+                    }
+                    a=a.neste;
+                }
+            } else {
+                indeksSvar=-1;
+            }
+
+
+        return indeksSvar;
     }
 
     @Override
