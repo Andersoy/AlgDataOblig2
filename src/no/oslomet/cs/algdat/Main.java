@@ -1,5 +1,6 @@
 package no.oslomet.cs.algdat;
 
+import java.sql.SQLOutput;
 import java.util.Arrays;
 
 public class Main {
@@ -28,17 +29,25 @@ public class Main {
 //                + " " + l3.toString() + " " + l1.omvendtString() + " "
 //                + l2.omvendtString() + " " + l3.omvendtString());
 
-
-        Character[] c = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
-        DobbeltLenketListe<Character> liste = new DobbeltLenketListe<>(c);
-
-        System.out.println(liste.subliste(3, 8)); // [D, E, F, G, H]
-        System.out.println(liste.subliste(5, 5)); // []
+//
+//        Character[] c = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
+//        DobbeltLenketListe<Character> liste = new DobbeltLenketListe<>(c);
+//
+//        System.out.println(liste.subliste(3, 8)); // [D, E, F, G, H]
+//        System.out.println(liste.subliste(5, 5)); // []
 
 //        System.out.println(liste.antall());
+//
+//        System.out.println(liste.subliste(8, liste.antall())); // [I, J]
+//        System.out.println(liste.subliste(0, 11)); // skal kaste unntak
 
-        System.out.println(liste.subliste(8, liste.antall())); // [I, J]
-        System.out.println(liste.subliste(0, 11)); // skal kaste unntak
+
+        String[] navn ={"Lars"," Anders","Bodil","Kari","Per" ,"Berit"};
+        Liste<String> liste = new DobbeltLenketListe<>(navn);
+
+        liste.forEach(s -> System.out. print(s + " "));
+        System.out.println();
+        for (String s : liste) System.out. print(s + " ");
     }
 
 }
