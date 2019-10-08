@@ -4,7 +4,7 @@ package no.oslomet.cs.algdat;
 ////////////////// class DobbeltLenketListe //////////////////////////////
 
 
-
+import com.sun.tools.javac.util.ArrayUtils;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.lang.reflect.Array;
@@ -19,6 +19,7 @@ Gruppemedlemmer:    S331398 - Anders Oeyrehagen
                     S330473 - Tommy Grut
                     S331386 - Tobias Dyre Evju
                     S331359 - Theodor Fredheim Aandal
+
  */
 
 
@@ -28,7 +29,6 @@ public class DobbeltLenketListe<T> implements Liste<T> {
      * Node class
      * @param <T>
      */
-
     private static final class Node<T> {
         private T verdi;                   // nodens verdi
         private Node<T> forrige, neste;    // pekere
@@ -82,10 +82,11 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     public DobbeltLenketListe() {
         hode = hale = new Node(null);
-        hode.neste = hale;
+  /*      hode.neste = hale;
         hale.forrige = hode;
-
+*/
         antall = 0;
+
     }
 
     private void flyttVerdier(T[] a){
@@ -115,9 +116,9 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         flyttVerdier(a);
         hode = hale = new Node(null);
-        hode.neste  = hale;
+   /*     hode.neste  = hale;
         hale.forrige = hode;
-
+*/
         Node<T> p = hode;
         for (T i : generiskArray) {
             Node<T> q = new Node<>(i);
@@ -211,23 +212,113 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     @Override
     public void leggInn(int indeks, T verdi) {
         Node<T> p = hode;
-        Node<T> q = new Node<>(verdi);
+        Node<T> r;
+        int indeksPos;
 
-        for(int i = 0; i < indeks-1; i ++){
-            p=p.neste;
+        if (verdi == null) {
+            throw new NullPointerException("Null-verdier ikke tillatt");
         }
-        Node<T> r=p.neste;
 
-        q.neste=r;
-        r.forrige=q;
+        if (indeks < 0 || indeks > antall) {
+            throw new IndexOutOfBoundsException("Ulovlig verdi på index");
+        } else {
 
-        q.forrige=p;
-        p.neste=q;
+            Node<T> q = new Node<>(verdi);
+            if (indeks == 0) {
+                indeksPos = indeks;
+            } else {
+                indeksPos = indeks - 1;
+            }
+
+            //Hvis listen er tom
+            if (antall == 0) {
+                hode.neste = q;
+                hale.forrige = q;
+                antall++;
+                endringer++;
+
+                //Legge inn i starten
+            } else if (indeks == 0 && antall > 1) {
+                r = p.neste;
+
+                r.forrige = q;
+                q.neste = r;
+
+                hode.neste = q;
+                antall++;
+                endringer++;
+
+                //Legge inn på index 0 i en liste med ett element
+            } else if (indeks == 0 && antall == 1) {
+                r = p.neste;
+                q.neste = r;
+                r.forrige = q;
+                hale.forrige = r;
+                hode.neste = q;
+                antall++;
+                endringer++;
+
+                //Legge inn på slutten
+            } else if (indeks == antall) {
+                while (p.neste != null) {
+                    p = p.neste;
+                }
+
+                p.neste = q;
+                q.forrige = p;
+
+
+                hale.forrige = q;
+                antall++;
+                endringer++;
+
+            } else {
+                for (int i = 0; i <= indeksPos; i++) {
+                    p = p.neste;
+                }
+
+                if (indeks == antall - 1) {
+                    r = hale.forrige;
+                    q.neste = r;
+                    q.forrige = p;
+
+                    r.forrige = q;
+                    p.neste = q;
+                    hale = r;
+                    antall++;
+                    endringer++;
+                } else {
+                    r = p.neste;
+                    q.neste = r;
+                    r.forrige = q;
+
+                    q.forrige = p;
+                    p.neste = q;
+
+                    antall++;
+                    endringer++;
+                }
+            }
+        }
     }
 
     @Override
     public boolean inneholder(T verdi) {
-        throw new NotImplementedException();
+        Node<T> p = hode;
+        Node a = p.neste;
+        boolean svar = false;
+
+        for (int i = 0; i < antall; i++) {
+
+            if (a.verdi.equals((T)verdi)) {
+                svar=true;
+                break;
+            } else {
+                svar=false;
+            }
+            a=a.neste;
+        }
+        return svar;
     }
 
     @Override
@@ -241,7 +332,24 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public int indeksTil(T verdi) {
-        throw new NotImplementedException();
+        Node<T> p = hode;
+        Node a = p.neste;
+        int indeksSvar=0;
+
+            if (inneholder(verdi)) {
+                for (int i = 0; i < antall; i ++) {
+                    if(a.verdi.equals(verdi)) {
+                        indeksSvar=i;
+                        break;
+                    }
+                    a=a.neste;
+                }
+            } else {
+                indeksSvar=-1;
+            }
+
+
+        return indeksSvar;
     }
 
     @Override
@@ -264,17 +372,144 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public boolean fjern(T verdi) {
-        throw new NotImplementedException();
+        boolean fjern;
+        int indeks = -1;
+
+        if(antall == 0 || verdi == null){
+            return false;
+        }
+
+        if(antall == 1){
+            hode.neste = hale;
+            hale.forrige = hode;
+            antall--;
+            endringer++;
+            return true;
+        }
+
+        Node<T> p = hode;
+
+        for(int i = 0; i < antall; i++){
+            p = p.neste;
+            if(p.verdi.equals(verdi)) {
+                indeks = i;
+                break;
+            }
+        }
+        if(p.forrige == null){
+            p = hode;
+        }
+        else {
+            p = p.forrige;
+        }
+
+        Node<T> q = p.neste;
+
+        if(indeks == -1){
+            fjern = false;
+        }
+
+        else if (indeks == 0) {
+            //q er første element
+            Node<T> r = q.neste;
+            r.forrige = null;
+            hode.neste = r;
+            antall--;
+            endringer++;
+            fjern = true;
+        }
+
+        else if (indeks == antall-1) {
+            //q er siste element
+            p.neste = null;
+            hale.forrige = p;
+            antall--;
+            endringer++;
+            fjern = true;
+        }
+
+        else {
+            //Normal fjerning i midten av listen
+            Node<T> r = q.neste;
+            p.neste = r;
+            r.forrige = p;
+            antall--;
+            endringer++;
+            fjern = true;
+        }
+        return fjern;
     }
 
     @Override
     public T fjern(int indeks) {
-        throw new NotImplementedException();
+
+        if(antall == 0){
+            throw new IndexOutOfBoundsException("Listen er tom");
+        }
+
+        if(indeks < 0 || indeks >= antall){
+            throw new IndexOutOfBoundsException("Indeks utenfor listen");
+        }
+
+        if(antall == 1){
+            hode.neste = hale;
+            hale.forrige = hode;
+        }
+
+        Node<T> p = hode;
+
+        for (int i= 0; i<indeks; ++i) {
+            p = p.neste;
+        }
+        Node<T> q = p.neste;
+
+        if (indeks == 0) {
+            //q er første element
+            Node<T> r = q.neste;
+            r.forrige = null;
+            hode.neste = r;
+            antall--;
+            endringer++;
+
+        }
+        else if (indeks == antall-1) {
+            //q er siste element
+            p.neste = null;
+            hale.forrige = p;
+            antall--;
+            endringer++;
+        }
+        else {
+            //Normal fjerning i midten av listen
+            Node<T> r = q.neste;
+            p.neste = r;
+            r.forrige = p;
+            antall--;
+            endringer++;
+        }
+        return q.verdi;
     }
+/*
+    @Override
+    public void nullstill() {
+        Node<T> p = hode;
+        Node<T> q = p.neste;
+        Node<T> r = q.neste;
+        while(antall > 0){
+            p.neste = r;
+            r.forrige = p;
+            antall--;
+            endringer++;
+        }
+
+
+    }*/
 
     @Override
     public void nullstill() {
-        throw new NotImplementedException();
+        while (antall > 0) {
+            fjern(0);
+        }
     }
 
     @Override
@@ -331,6 +566,18 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public Iterator<T> iterator() {
+        /*Iterator iterator = new Iterator() {
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+
+            @Override
+            public Object next() {
+                return null;
+            }
+        };
+        return iterator;*/
         throw new NotImplementedException();
     }
 
@@ -345,7 +592,14 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         private int iteratorendringer;
 
         private DobbeltLenketListeIterator(){
-            throw new NotImplementedException();
+            denne = hode;     // p starter på den første i listen
+            fjernOK = false;  // blir sann når next() kalles
+            iteratorendringer = endringer;  // teller endringer
+        }
+
+        @Override
+        public boolean hasNext(){
+            return denne != null;
         }
 
         private DobbeltLenketListeIterator(int indeks){
@@ -353,13 +607,17 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }
 
         @Override
-        public boolean hasNext(){
-            throw new NotImplementedException();
-        }
-
-        @Override
         public T next(){
-            throw new NotImplementedException();
+            if(endringer != iteratorendringer){
+                throw new ConcurrentModificationException("Ikke likt");
+            }
+
+            if(!hasNext()){
+                throw new NoSuchElementException("");
+            }
+
+            fjernOK = true;
+            return denne.verdi;
         }
 
         @Override
