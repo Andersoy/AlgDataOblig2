@@ -59,8 +59,9 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         Node q;
         Node x = hale;
 
+
         if(indeks<(antall/2)){
-            for(int i = 0; i<indeks; i++){
+            for(int i = 0; i<=indeks; i++){
                 q=p.neste;
                 p=q;
             }
@@ -68,7 +69,9 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }
 
         else{
-            for(int i = generiskArray.length-1; i>indeks; i--){
+
+            for(int i = antall-1; i>=indeks; i--){
+
                 q=x.forrige;
                 x=q;
             }
@@ -130,8 +133,32 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     public Liste<T> subliste(int fra, int til){
 
-        throw new NotImplementedException();
+        fratilKontroll(antall, fra, til);
+
+        DobbeltLenketListe<T> subListe = new DobbeltLenketListe<>();
+
+        for(int i = fra; i < til; i++){
+            subListe.leggInn(hent(i));
+        }
+
+        return subListe;
     }
+
+    public static void fratilKontroll(int antall, int fra, int til)
+    {
+        if (fra < 0)                                  // fra er negativ
+            throw new IndexOutOfBoundsException
+                    ("fra(" + fra + ") er negativ!");
+
+        if (til > antall)                          // til er utenfor tabellen
+            throw new IndexOutOfBoundsException
+                    ("til(" + til + ") > antall(" + antall + ")");
+
+        if (fra > til)                                // fra er større enn til
+            throw new IllegalArgumentException
+                    ("fra(" + fra + ") > til(" + til + ") - illegalt intervall!");
+    }
+
 
     @Override
     public int antall() {
@@ -169,6 +196,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
 
         } else {   //hvis listen består av 1 eller flere
+
             Node<T> x = hale.forrige;
             x.neste = q;
             q.forrige = x;
@@ -298,7 +326,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         indeksKontroll(indeks, false);
 
         Node<T> node = finnNode(indeks);
-        return (T)node;
+        return node.verdi;
     }
 
     @Override
@@ -326,15 +354,15 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     @Override
     public T oppdater(int indeks, T nyverdi) {
 
-
-        T objekt = hent(indeks);
-
+        indeksKontroll(indeks, false);
         if(nyverdi == null){
-            return null;
+            throw  new NullPointerException("Nullverdi ikke tillatt");
         }
 
-        T temp = objekt;
-        objekt = nyverdi;
+        Node p = finnNode(indeks);
+        T temp = (T)p.verdi;
+
+        p.verdi = nyverdi;
 
         endringer++;
         return temp;
