@@ -79,9 +79,9 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     public DobbeltLenketListe() {
         hode = hale = new Node(null);
-        hode.neste = hale;
+  /*      hode.neste = hale;
         hale.forrige = hode;
-
+*/
         antall = 0;
 
     }
@@ -113,9 +113,9 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         flyttVerdier(a);
         hode = hale = new Node(null);
-        hode.neste  = hale;
+   /*     hode.neste  = hale;
         hale.forrige = hode;
-
+*/
         Node<T> p = hode;
         for (T i : generiskArray) {
             Node<T> q = new Node<>(i);
@@ -184,18 +184,94 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     @Override
     public void leggInn(int indeks, T verdi) {
         Node<T> p = hode;
-        Node<T> q = new Node<>(verdi);
+        Node<T> r;
+        int indeksPos;
 
-        for(int i = 0; i < indeks-1; i ++){
-            p=p.neste;
+        if (verdi == null) {
+            throw new NullPointerException("Null-verdier ikke tillatt");
         }
-        Node<T> r=p.neste;
 
-        q.neste=r;
-        r.forrige=q;
+        if (indeks < 0 || indeks > antall) {
+            throw new IndexOutOfBoundsException("Ulovlig verdi på index");
+        } else {
 
-        q.forrige=p;
-        p.neste=q;
+            Node<T> q = new Node<>(verdi);
+            if (indeks == 0) {
+                indeksPos = indeks;
+            } else {
+                indeksPos = indeks - 1;
+            }
+
+            //Hvis listen er tom
+            if (antall == 0) {
+                hode.neste = q;
+                hale.forrige = q;
+                antall++;
+                endringer++;
+
+                //Legge inn i starten
+            } else if (indeks == 0 && antall > 1) {
+                r = p.neste;
+
+                r.forrige = q;
+                q.neste = r;
+
+                hode.neste = q;
+                antall++;
+                endringer++;
+
+                //Legge inn på index 0 i en liste med ett element
+            } else if (indeks == 0 && antall == 1) {
+                r = p.neste;
+                q.neste = r;
+                r.forrige = q;
+                hale.forrige = r;
+                hode.neste = q;
+                antall++;
+                endringer++;
+
+                //Legge inn på slutten
+            } else if (indeks == antall) {
+                while (p.neste != null) {
+                    p = p.neste;
+                }
+
+                p.neste = q;
+                q.forrige = p;
+
+
+                hale.forrige = q;
+                antall++;
+                endringer++;
+
+            } else {
+                for (int i = 0; i <= indeksPos; i++) {
+                    p = p.neste;
+                }
+
+                if (indeks == antall - 1) {
+                    r = hale.forrige;
+                    q.neste = r;
+                    q.forrige = p;
+
+                    r.forrige = q;
+                    p.neste = q;
+                    hale = r;
+                    antall++;
+                    endringer++;
+                } else {
+                    r = p.neste;
+                    q.neste = r;
+                    r.forrige = q;
+
+                    q.forrige = p;
+                    p.neste = q;
+
+                    antall++;
+                    endringer++;
+                }
+            }
+        }
     }
 
     @Override

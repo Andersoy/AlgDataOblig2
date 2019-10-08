@@ -670,7 +670,7 @@ class DobbeltLenketListeTest {
             antallFeil++;
             System.out.println("Oppgave 5i: Feil i metoden leggInn()!");
         }
-
+        System.out.println(liste.omvendtString());
         if (!liste.omvendtString().equals("[7, 6, 5, 4, 3, 2, 1]")) {
             antallFeil++;
             System.out.println("Oppgave 5j: Feil i metoden leggInn()!");
