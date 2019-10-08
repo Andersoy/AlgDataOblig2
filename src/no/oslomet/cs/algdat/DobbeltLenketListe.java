@@ -570,23 +570,17 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public Iterator<T> iterator() {
-        /*Iterator iterator = new Iterator() {
-            @Override
-            public boolean hasNext() {
-                return false;
-            }
+        return new DobbeltLenketListeIterator();
 
-            @Override
-            public Object next() {
-                return null;
-            }
-        };
-        return iterator;*/
-        throw new NotImplementedException();
     }
 
     public Iterator<T> iterator(int indeks) {
-        throw new NotImplementedException();
+
+        indeksKontroll(indeks, false);
+
+        return new DobbeltLenketListeIterator(indeks);
+
+
     }
 
     private class DobbeltLenketListeIterator implements Iterator<T>
@@ -596,7 +590,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         private int iteratorendringer;
 
         private DobbeltLenketListeIterator(){
-            denne = hode;     // p starter på den første i listen
+            denne = hode.neste;     // p starter på den første i listen
             fjernOK = false;  // blir sann når next() kalles
             iteratorendringer = endringer;  // teller endringer
         }
@@ -607,26 +601,73 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }
 
         private DobbeltLenketListeIterator(int indeks){
-            throw new NotImplementedException();
+            denne = hode.neste;     // p starter på den første i listen
+            fjernOK = false;  // blir sann når next() kalles
+            iteratorendringer = endringer;  // teller endringer
+
+            denne = finnNode(indeks);
         }
 
         @Override
         public T next(){
             if(endringer != iteratorendringer){
-                throw new ConcurrentModificationException("Ikke likt");
+                throw new ConcurrentModificationException("Ikke like endringer");
             }
 
             if(!hasNext()){
-                throw new NoSuchElementException("");
+                throw new NoSuchElementException("Siste element");
             }
 
             fjernOK = true;
-            return denne.verdi;
+            T temp = (T)denne.verdi;
+            denne = denne.neste;
+            return temp;
         }
 
         @Override
         public void remove(){
-            throw new NotImplementedException();
+
+            if (!fjernOK){
+                throw new IllegalStateException("Ikke lov å fjerne: !!!!FEIL!!!!");
+
+            }
+            if(endringer!=iteratorendringer){
+                throw new ConcurrentModificationException("FEIL");
+
+            }
+
+            Node<T> p = denne.forrige;
+            Node<T> q = denne;
+            Node<T> r = denne.neste;
+
+
+            fjernOK = false;
+
+            if(antall==1){
+                hode.neste = hale;
+                hale.forrige = hode;
+            }
+
+            else if(q.neste == null){
+                p.neste = null;
+                hale.forrige = p;
+
+            }
+            else if(q.forrige == null){
+                hode.neste = r;
+                r.forrige = null;
+            }
+            else{
+                p.neste = q.neste;
+                r.forrige = p;
+            }
+
+            antall--;
+            iteratorendringer++;
+            endringer++;
+
+
+
         }
 
     } // class DobbeltLenketListeIterator
