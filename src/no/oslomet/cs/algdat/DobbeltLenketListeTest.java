@@ -266,6 +266,7 @@ class DobbeltLenketListeTest {
         String t1 = "[]", t2 = liste.toString();
 
         if (!t1.equals(t2)) {
+
             antallFeil++;
             System.out.println
                     ("Oppgave 2m: Du har " + t2 + ", men det skal være " + t1);
@@ -669,7 +670,7 @@ class DobbeltLenketListeTest {
             antallFeil++;
             System.out.println("Oppgave 5i: Feil i metoden leggInn()!");
         }
-
+        System.out.println(liste.omvendtString());
         if (!liste.omvendtString().equals("[7, 6, 5, 4, 3, 2, 1]")) {
             antallFeil++;
             System.out.println("Oppgave 5j: Feil i metoden leggInn()!");

@@ -54,9 +54,36 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     private T[] generiskArray;
 
 
+
+    private Node<T> finnNode(int indeks) {
+        Node p = hode;
+        Node q;
+        Node x = hale;
+
+        if(indeks<(antall/2)){
+            for(int i = 0; i<indeks; i++){
+                q=p.neste;
+                p=q;
+            }
+            return p;
+        }
+
+        else{
+            for(int i = generiskArray.length-1; i>indeks; i--){
+                q=x.forrige;
+                x=q;
+            }
+            return x;
+        }
+    }
+
     public DobbeltLenketListe() {
-        hode = hale = new Node<>(null);
+        hode = hale = new Node(null);
+  /*      hode.neste = hale;
+        hale.forrige = hode;
+*/
         antall = 0;
+
     }
 
     private void flyttVerdier(T[] a){
@@ -86,20 +113,20 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         flyttVerdier(a);
         hode = hale = new Node(null);
-
-
-        if(generiskArray.length!=0){
-            Node<T> p = hode;
-            for (T i : generiskArray) {
-                Node<T> q = new Node<>(i);
-                p.neste = q;
+   /*     hode.neste  = hale;
+        hale.forrige = hode;
+*/
+        Node<T> p = hode;
+        for (T i : generiskArray) {
+            Node<T> q = new Node<>(i);
+            p.neste = q;
+            if (p != hode) {
                 q.forrige = p;
-                p = q;
-                antall++;
             }
-            hale.forrige = p;
-
+            p = q;
+            antall++;
         }
+        hale.forrige = p;
     }
 
     public Liste<T> subliste(int fra, int til){
@@ -133,7 +160,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         Node<T> q = new Node<>(verdiNode);
 
 
-//hvis listen er tom
+        //hvis listen er tom
         if(antall == 0) {
             hode.neste=q;
             hale.forrige=q;
@@ -143,7 +170,6 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
 
         } else {   //hvis listen består av 1 eller flere
-
             Node<T> x = hale.forrige;
             x.neste = q;
             q.forrige = x;
@@ -158,18 +184,94 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     @Override
     public void leggInn(int indeks, T verdi) {
         Node<T> p = hode;
-        Node<T> q = new Node<>(verdi);
+        Node<T> r;
+        int indeksPos;
 
-        for(int i = 0; i < indeks-1; i ++){
-            p=p.neste;
+        if (verdi == null) {
+            throw new NullPointerException("Null-verdier ikke tillatt");
         }
-        Node<T> r=p.neste;
 
-        q.neste=r;
-        r.forrige=q;
+        if (indeks < 0 || indeks > antall) {
+            throw new IndexOutOfBoundsException("Ulovlig verdi på index");
+        } else {
 
-        q.forrige=p;
-        p.neste=q;
+            Node<T> q = new Node<>(verdi);
+            if (indeks == 0) {
+                indeksPos = indeks;
+            } else {
+                indeksPos = indeks - 1;
+            }
+
+            //Hvis listen er tom
+            if (antall == 0) {
+                hode.neste = q;
+                hale.forrige = q;
+                antall++;
+                endringer++;
+
+                //Legge inn i starten
+            } else if (indeks == 0 && antall > 1) {
+                r = p.neste;
+
+                r.forrige = q;
+                q.neste = r;
+
+                hode.neste = q;
+                antall++;
+                endringer++;
+
+                //Legge inn på index 0 i en liste med ett element
+            } else if (indeks == 0 && antall == 1) {
+                r = p.neste;
+                q.neste = r;
+                r.forrige = q;
+                hale.forrige = r;
+                hode.neste = q;
+                antall++;
+                endringer++;
+
+                //Legge inn på slutten
+            } else if (indeks == antall) {
+                while (p.neste != null) {
+                    p = p.neste;
+                }
+
+                p.neste = q;
+                q.forrige = p;
+
+
+                hale.forrige = q;
+                antall++;
+                endringer++;
+
+            } else {
+                for (int i = 0; i <= indeksPos; i++) {
+                    p = p.neste;
+                }
+
+                if (indeks == antall - 1) {
+                    r = hale.forrige;
+                    q.neste = r;
+                    q.forrige = p;
+
+                    r.forrige = q;
+                    p.neste = q;
+                    hale = r;
+                    antall++;
+                    endringer++;
+                } else {
+                    r = p.neste;
+                    q.neste = r;
+                    r.forrige = q;
+
+                    q.forrige = p;
+                    p.neste = q;
+
+                    antall++;
+                    endringer++;
+                }
+            }
+        }
     }
 
     @Override
@@ -193,7 +295,11 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public T hent(int indeks) {
-        throw new NotImplementedException();
+
+        indeksKontroll(indeks, false);
+
+        Node<T> node = finnNode(indeks);
+        return (T)node;
     }
 
     @Override
@@ -202,17 +308,17 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         Node a = p.neste;
         int indeksSvar=0;
 
-        if (inneholder(verdi)) {
-            for (int i = 0; i < antall; i ++) {
-                if(a.verdi.equals(verdi)) {
-                    indeksSvar=i;
-                    break;
+            if (inneholder(verdi)) {
+                for (int i = 0; i < antall; i ++) {
+                    if(a.verdi.equals(verdi)) {
+                        indeksSvar=i;
+                        break;
+                    }
+                    a=a.neste;
                 }
-                a=a.neste;
+            } else {
+                indeksSvar=-1;
             }
-        } else {
-            indeksSvar=-1;
-        }
 
 
         return indeksSvar;
@@ -220,7 +326,20 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public T oppdater(int indeks, T nyverdi) {
-        throw new NotImplementedException();
+
+
+        T objekt = hent(indeks);
+
+        if(nyverdi == null){
+            return null;
+        }
+
+        T temp = objekt;
+        objekt = nyverdi;
+
+        endringer++;
+        return temp;
+
     }
 
     @Override
@@ -372,25 +491,24 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         if(antall == 0){
             return "[]";
         }
-
-        else if (antall == 1){
-            return "["+hode.neste.verdi+"]";
+        else if(antall == 1){
+            return "[" + hode.neste.verdi + "]";
         }
 
-        else{
+        else {
             Node p = hode.neste;
 
-            verdiString.append("["+ p.verdi);
-            p =p.neste;
+            verdiString.append("[" + p.verdi);
+            p = p.neste;
 
-            while (p != null){
-                verdiString.append(", "+p.verdi);
+            while (p != null) {
+                verdiString.append(", " +p.verdi);
                 p = p.neste;
             }
             verdiString.append("]");
-            System.out.println(verdiString.toString());
-            return  verdiString.toString();
+            return verdiString.toString();
         }
+
     }
 
     public String omvendtString() {
@@ -399,24 +517,22 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         if(antall == 0){
             return "[]";
         }
-
-        else if (antall == 1){
-            return "["+hode.neste.verdi+"]";
+        else if(antall == 1){
+            return "[" + hale.forrige.verdi + "]";
         }
 
-        else{
+        else {
             Node p = hale.forrige;
 
-            verdiString.append("["+ p.verdi);
-            p =p.forrige;
+            verdiString.append("[" + p.verdi);
+            p = p.forrige;
 
-            while (p != null){
-                verdiString.append(", "+p.verdi);
+            while (p != null) {           // "p.verdi" her, og kun "p" i toString()-metoden. hvorfor??
+                verdiString.append(", " +p.verdi);
                 p = p.forrige;
             }
             verdiString.append("]");
-            System.out.println(verdiString.toString());
-            return  verdiString.toString();
+            return verdiString.toString();
         }
     }
 
