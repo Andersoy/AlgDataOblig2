@@ -46,7 +46,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     }
 
     // instansvariabler
-    private Node<T> hode;          // peker til den første i listen
+    private Node<T> hode;          // peker til den forste i listen
     private Node<T> hale;          // peker til den siste i listen
     private int antall;            // antall noder i listen
     private int endringer;         // antall endringer i listen
@@ -154,7 +154,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             throw new IndexOutOfBoundsException
                     ("til(" + til + ") > antall(" + antall + ")");
 
-        if (fra > til)                                // fra er større enn til
+        if (fra > til)                                // fra er storre enn til
             throw new IllegalArgumentException
                     ("fra(" + fra + ") > til(" + til + ") - illegalt intervall!");
     }
@@ -195,7 +195,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             svar = true;
 
 
-        } else {   //hvis listen består av 1 eller flere
+        } else {   //hvis listen bestaar av 1 eller flere
 
             Node<T> x = hale.forrige;
             x.neste = q;
@@ -219,7 +219,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }
 
         if (indeks < 0 || indeks > antall) {
-            throw new IndexOutOfBoundsException("Ulovlig verdi på index");
+            throw new IndexOutOfBoundsException("Ulovlig verdi paa index");
         } else {
 
             Node<T> q = new Node<>(verdi);
@@ -247,7 +247,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
                 antall++;
                 endringer++;
 
-                //Legge inn på index 0 i en liste med ett element
+                //Legge inn paa index 0 i en liste med ett element
             } else if (indeks == 0 && antall == 1) {
                 r = p.neste;
                 q.neste = r;
@@ -257,7 +257,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
                 antall++;
                 endringer++;
 
-                //Legge inn på slutten
+                //Legge inn paa slutten
             } else if (indeks == antall) {
                 while (p.neste != null) {
                     p = p.neste;
@@ -414,7 +414,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }
 
         else if (indeks == 0) {
-            //q er første element
+            //q er forste element
             Node<T> r = q.neste;
             r.forrige = null;
             hode.neste = r;
@@ -468,7 +468,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         Node<T> q = p.neste;
 
         if (indeks == 0) {
-            //q er første element
+            //q er forste element
             Node<T> r = q.neste;
             r.forrige = null;
             hode.neste = r;
@@ -590,8 +590,8 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         private int iteratorendringer;
 
         private DobbeltLenketListeIterator(){
-            denne = hode.neste;     // p starter på den første i listen
-            fjernOK = false;  // blir sann når next() kalles
+            denne = hode.neste;     // p starter paa den forste i listen
+            fjernOK = false;  // blir sann naar next() kalles
             iteratorendringer = endringer;  // teller endringer
         }
 
@@ -602,8 +602,8 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }
 
         private DobbeltLenketListeIterator(int indeks){
-            denne = hode.neste;     // p starter på den første i listen
-            fjernOK = false;  // blir sann når next() kalles
+            denne = hode.neste;     // p starter paa den forste i listen
+            fjernOK = false;  // blir sann naar next() kalles
             iteratorendringer = endringer;  // teller endringer
 
             denne = finnNode(indeks);
@@ -631,14 +631,14 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         public void remove(){
 
             if (!fjernOK){
-                throw new IllegalStateException("Ikke lov å fjerne: ");
+                throw new IllegalStateException("Ikke lov aa fjerne: ");
             }
 
             if(endringer!=iteratorendringer){
                 throw new ConcurrentModificationException("FEIL");
             }
 
-            fjernOK = false;               // remove() kan ikke kalles på nytt
+            fjernOK = false;               // remove() kan ikke kalles paa nytt
             Node<T> q = hode.neste;              // hjelpevariabel
 
 
@@ -654,7 +654,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             }
 
 
-            else if (hode.neste == denne.forrige){           // skal den første fjernes?
+            else if (hode.neste == denne.forrige){           // skal den forste fjernes?
                 hode.neste = denne;
                 denne.forrige = null;
 
